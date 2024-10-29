@@ -243,8 +243,8 @@ class LlavaMetaForCausalLM(ABC):
                 cur_image_features = image_features[cur_image_idx]
                 cur_input_embeds_1 = self.get_model().embed_tokens(cur_input_ids)
                 # NOTE: added trainable projection matrix
-                #lin_layer = torch.nn.Linear(4096, 2048)
-                #cur_image_features = lin_layer(cur_image_features)
+                lin_layer = torch.nn.Linear(4096, 2048).to(self.device)
+                cur_image_features = lin_layer(cur_image_features)
                 cur_input_embeds = torch.cat([cur_input_embeds_1, cur_image_features[0:0]], dim=0)
                 new_input_embeds.append(cur_input_embeds)
                 new_labels.append(labels[batch_idx])
