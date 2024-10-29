@@ -438,6 +438,8 @@ def preprocess_v1(
     if has_image:
         input_ids = torch.stack([tokenizer_image_token(prompt, tokenizer, return_tensors='pt') for prompt in conversations], dim=0)
     else:
+        if tokenizer.pad_token is None:
+            tokenizer.pad_token = tokenizer.eos_token
         input_ids = tokenizer(
             conversations,
             return_tensors="pt",
@@ -473,8 +475,12 @@ def preprocess_v1(
             else:
                 round_len = len(tokenizer(rou).input_ids)
                 instruction_len = len(tokenizer(parts[0]).input_ids) - 2
-
+            '''
             if i != 0 and not tokenizer.legacy and IS_TOKENIZER_GREATER_THAN_0_14:
+                round_len -= 1
+                instruction_len -= 1
+            '''
+            if i != 0 and IS_TOKENIZER_GREATER_THAN_0_14:
                 round_len -= 1
                 instruction_len -= 1
 
@@ -891,9 +897,9 @@ def train(attn_implementation=None):
             cache_dir=training_args.cache_dir,
             model_max_length=training_args.model_max_length,
             padding_side="right",
-            use_fast=False,
+            #use_fast=False,
+            use_fast=True
         )
-
     if model_args.version == "v0":
         if tokenizer.pad_token is None:
             smart_tokenizer_and_embedding_resize(

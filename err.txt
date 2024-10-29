@@ -1,10 +1,43 @@
-model.get_model().initialize_vision_modules(
-  File "/content/MyLLaVA/LLaVA/llava/model/llava_arch.py", line 98, in initialize_vision_modules
-    self.mm_projector.load_state_dict(get_w(mm_projector_weights, 'mm_projector'))
-  File "/usr/local/lib/python3.10/dist-packages/torch/nn/modules/module.py", line 2041, in load_state_dict
-    raise RuntimeError('Error(s) in loading state_dict for {}:\n\t{}'.format(
-RuntimeError: Error(s) in loading state_dict for Sequential:
-	size mismatch for 0.weight: copying a param with shape torch.Size([4096, 1024]) from checkpoint, the shape in current model is torch.Size([2048, 1024]).
-	size mismatch for 0.bias: copying a param with shape torch.Size([4096]) from checkpoint, the shape in current model is torch.Size([2048]).
-	size mismatch for 2.weight: copying a param with shape torch.Size([4096, 4096]) from checkpoint, the shape in current model is torch.Size([2048, 2048]).
-	size mismatch for 2.bias: copying a param with shape torch.Size([4096]) from checkpoint, the shape in current model is torch.Size([2048]).
+File "/content/MyLLaVA/LLaVA/llava/train/train_mem.py", line 4, in <module>
+    train(attn_implementation="flash_attention_2")
+  File "/content/MyLLaVA/LLaVA/llava/train/train.py", line 975, in train
+    trainer.train()
+  File "/usr/local/lib/python3.10/dist-packages/transformers/trainer.py", line 2122, in train
+    return inner_training_loop(
+  File "/usr/local/lib/python3.10/dist-packages/transformers/trainer.py", line 2426, in _inner_training_loop
+    batch_samples, num_items_in_batch = self.get_batch_samples(epoch_iterator, num_batches)
+  File "/usr/local/lib/python3.10/dist-packages/transformers/trainer.py", line 5038, in get_batch_samples
+    batch_samples += [next(epoch_iterator)]
+  File "/usr/local/lib/python3.10/dist-packages/accelerate/data_loader.py", line 550, in __iter__
+    current_batch = next(dataloader_iter)
+  File "/usr/local/lib/python3.10/dist-packages/torch/utils/data/dataloader.py", line 633, in __next__
+    data = self._next_data()
+  File "/usr/local/lib/python3.10/dist-packages/torch/utils/data/dataloader.py", line 1345, in _next_data
+    return self._process_data(data)
+  File "/usr/local/lib/python3.10/dist-packages/torch/utils/data/dataloader.py", line 1371, in _process_data
+    data.reraise()
+  File "/usr/local/lib/python3.10/dist-packages/torch/_utils.py", line 644, in reraise
+    raise exception
+ValueError: Caught ValueError in DataLoader worker process 0.
+Original Traceback (most recent call last):
+  File "/usr/local/lib/python3.10/dist-packages/torch/utils/data/_utils/worker.py", line 308, in _worker_loop
+    data = fetcher.fetch(index)
+  File "/usr/local/lib/python3.10/dist-packages/torch/utils/data/_utils/fetch.py", line 51, in fetch
+    data = [self.dataset[idx] for idx in possibly_batched_index]
+  File "/usr/local/lib/python3.10/dist-packages/torch/utils/data/_utils/fetch.py", line 51, in <listcomp>
+    data = [self.dataset[idx] for idx in possibly_batched_index]
+  File "/content/MyLLaVA/LLaVA/llava/train/train.py", line 727, in __getitem__
+    data_dict = preprocess(
+  File "/content/MyLLaVA/LLaVA/llava/train/train.py", line 627, in preprocess
+    return preprocess_v1(sources, tokenizer, has_image=has_image)
+  File "/content/MyLLaVA/LLaVA/llava/train/train.py", line 441, in preprocess_v1
+    input_ids = tokenizer(
+  File "/usr/local/lib/python3.10/dist-packages/transformers/tokenization_utils_base.py", line 3021, in __call__
+    encodings = self._call_one(text=text, text_pair=text_pair, **all_kwargs)
+  File "/usr/local/lib/python3.10/dist-packages/transformers/tokenization_utils_base.py", line 3109, in _call_one
+    return self.batch_encode_plus(
+  File "/usr/local/lib/python3.10/dist-packages/transformers/tokenization_utils_base.py", line 3302, in batch_encode_plus
+    padding_strategy, truncation_strategy, max_length, kwargs = self._get_padding_truncation_strategies(
+  File "/usr/local/lib/python3.10/dist-packages/transformers/tokenization_utils_base.py", line 2923, in _get_padding_truncation_strategies
+    raise ValueError(
+ValueError: Asking to pad but the tokenizer does not have a padding token. Please select a token to use as `pad_token` `(tokenizer.pad_token = tokenizer.eos_token e.g.)` or add a new pad token via `tokenizer.add_special_tokens({'pad_token': '[PAD]'})`.
