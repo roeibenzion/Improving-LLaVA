@@ -1,0 +1,10 @@
+model.get_model().initialize_vision_modules(
+  File "/content/MyLLaVA/LLaVA/llava/model/llava_arch.py", line 98, in initialize_vision_modules
+    self.mm_projector.load_state_dict(get_w(mm_projector_weights, 'mm_projector'))
+  File "/usr/local/lib/python3.10/dist-packages/torch/nn/modules/module.py", line 2041, in load_state_dict
+    raise RuntimeError('Error(s) in loading state_dict for {}:\n\t{}'.format(
+RuntimeError: Error(s) in loading state_dict for Sequential:
+	size mismatch for 0.weight: copying a param with shape torch.Size([4096, 1024]) from checkpoint, the shape in current model is torch.Size([2048, 1024]).
+	size mismatch for 0.bias: copying a param with shape torch.Size([4096]) from checkpoint, the shape in current model is torch.Size([2048]).
+	size mismatch for 2.weight: copying a param with shape torch.Size([4096, 4096]) from checkpoint, the shape in current model is torch.Size([2048, 2048]).
+	size mismatch for 2.bias: copying a param with shape torch.Size([4096]) from checkpoint, the shape in current model is torch.Size([2048]).

@@ -94,8 +94,15 @@ class LlavaMetaModel:
             mm_projector_weights = torch.load(pretrain_mm_mlp_adapter, map_location='cpu')
             def get_w(weights, keyword):
                 return {k.split(keyword + '.')[1]: v for k, v in weights.items() if keyword in k}
-
+            # NOTE: this is the loading of the projector. If we have a smaller LLM we want to change the sizes.
+            '''
+            TODO: Since the projector is pretrained on a different size,
+            we cannot resize the projector to the current size as the weights are not compatible.
+            One solution is to have another trainable projection matrix that is used to project the output of the vision tower to the correct size.
+            
+            '''
             self.mm_projector.load_state_dict(get_w(mm_projector_weights, 'mm_projector'))
+            
 
 
 def unpad_image(tensor, original_size):
