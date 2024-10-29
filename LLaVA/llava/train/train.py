@@ -439,7 +439,7 @@ def preprocess_v1(
         input_ids = torch.stack([tokenizer_image_token(prompt, tokenizer, return_tensors='pt') for prompt in conversations], dim=0)
     else:
         if tokenizer.pad_token is None:
-            tokenizer.pad_token = tokenizer.eos_token
+            tokenizer.add_special_tokens({'pad_token': '[PAD]'})
         input_ids = tokenizer(
             conversations,
             return_tensors="pt",
@@ -915,6 +915,9 @@ def train(attn_implementation=None):
             conversation_lib.default_conversation = conversation_lib.conv_templates[model_args.version]
         else:
             conversation_lib.default_conversation = conversation_lib.conv_templates["vicuna_v1"]
+        if tokenizer.pad_token is None:
+            tokenizer.add_special_tokens({'pad_token': '[PAD]'})
+            model.resize_token_embeddings(len(tokenizer))
             
     if model_args.vision_tower is not None:
         model.get_model().initialize_vision_modules(
