@@ -224,6 +224,10 @@ class LLaVATrainer(Trainer):
                         manager.register_module_override(module, "weight", {"optim_bits": 32})
                         logger.debug(f"bitsandbytes: will optimize {module} in fp32")
                 logger.info(f"skipped: {skipped/2**20}M params")
+        
+        for group in optimizer_grouped_parameters:
+            param_count = sum(p.numel() for p in group["params"])
+            print(f"Group has {param_count} parameters with requires_grad=True.")
 
         return self.optimizer
 
