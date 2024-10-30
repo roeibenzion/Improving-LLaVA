@@ -1,32 +1,166 @@
+[2024-10-30 13:09:49,810] [INFO] [real_accelerator.py:219:get_accelerator] Setting ds_accelerator to cuda (auto detect)
+2024-10-30 13:09:54.397954: I tensorflow/core/util/port.cc:153] oneDNN custom operations are on. You may see slightly different numerical results due to floating-point round-off errors from different computation orders. To turn them off, set the environment variable `TF_ENABLE_ONEDNN_OPTS=0`.
+2024-10-30 13:09:54.417778: E external/local_xla/xla/stream_executor/cuda/cuda_fft.cc:485] Unable to register cuFFT factory: Attempting to register factory for plugin cuFFT when one has already been registered
+2024-10-30 13:09:54.438828: E external/local_xla/xla/stream_executor/cuda/cuda_dnn.cc:8454] Unable to register cuDNN factory: Attempting to register factory for plugin cuDNN when one has already been registered
+2024-10-30 13:09:54.445174: E external/local_xla/xla/stream_executor/cuda/cuda_blas.cc:1452] Unable to register cuBLAS factory: Attempting to register factory for plugin cuBLAS when one has already been registered
+2024-10-30 13:09:54.460535: I tensorflow/core/platform/cpu_feature_guard.cc:210] This TensorFlow binary is optimized to use available CPU instructions in performance-critical operations.
+To enable the following instructions: AVX2 AVX512F AVX512_VNNI FMA, in other operations, rebuild TensorFlow with the appropriate compiler flags.
+2024-10-30 13:09:55.547262: W tensorflow/compiler/tf2tensorrt/utils/py_utils.cc:38] TF-TRT Warning: Could not find TensorRT
+/usr/local/lib/python3.10/dist-packages/torchvision/datapoints/__init__.py:12: UserWarning: The torchvision.datapoints and torchvision.transforms.v2 namespaces are still Beta. While we do not expect major breaking changes, some APIs may still change according to user feedback. Please submit any feedback you may have in this issue: https://github.com/pytorch/vision/issues/6753, and you can also check out https://github.com/pytorch/vision/issues/7319 to learn more about the APIs that we suspect might involve future changes. You can silence this warning by calling torchvision.disable_beta_transforms_warning().
+  warnings.warn(_BETA_TRANSFORMS_WARNING)
+/usr/local/lib/python3.10/dist-packages/torchvision/transforms/v2/__init__.py:54: UserWarning: The torchvision.datapoints and torchvision.transforms.v2 namespaces are still Beta. While we do not expect major breaking changes, some APIs may still change according to user feedback. Please submit any feedback you may have in this issue: https://github.com/pytorch/vision/issues/6753, and you can also check out https://github.com/pytorch/vision/issues/7319 to learn more about the APIs that we suspect might involve future changes. You can silence this warning by calling torchvision.disable_beta_transforms_warning().
+  warnings.warn(_BETA_TRANSFORMS_WARNING)
+[2024-10-30 13:09:56,495] [WARNING] [runner.py:215:fetch_hostfile] Unable to find hostfile, will proceed with training with local resources only.
+[2024-10-30 13:09:56,496] [INFO] [runner.py:607:main] cmd = /usr/bin/python3 -u -m deepspeed.launcher.launch --world_info=eyJsb2NhbGhvc3QiOiBbMF19 --master_addr=127.0.0.1 --master_port=29500 --enable_each_rank_log=None llava/train/train_mem.py --lora_enable True --lora_r 32 --lora_alpha 64 --mm_projector_lr 2e-5 --deepspeed ./scripts/zero3.json --model_name_or_path meta-llama/Llama-3.2-1B --version v1 --data_path ./playground/data/llava_v1_5_mix665k.json --image_folder ./playground/data --vision_tower openai/clip-vit-large-patch14-336 --pretrain_mm_mlp_adapter ./checkpoints/llava-v1.5-7b-pretrain/mm_projector.bin --mm_projector_type mlp2x_gelu --mm_vision_select_layer -2 --mm_use_im_start_end False --mm_use_im_patch_token False --image_aspect_ratio pad --group_by_modality_length True --bf16 False --output_dir ./checkpoints/llava-v1.5-13b-lora --num_train_epochs 1 --per_device_train_batch_size 1 --per_device_eval_batch_size 4 --gradient_accumulation_steps 1 --evaluation_strategy no --save_strategy steps --save_steps 50000 --save_total_limit 1 --learning_rate 2e-4 --weight_decay 0. --warmup_ratio 0.03 --lr_scheduler_type cosine --logging_steps 1 --tf32 False --model_max_length 2048 --gradient_checkpointing True --dataloader_num_workers 4 --lazy_preprocess True --report_to wandb
+[2024-10-30 13:09:58,578] [INFO] [real_accelerator.py:219:get_accelerator] Setting ds_accelerator to cuda (auto detect)
+2024-10-30 13:10:03.123606: E external/local_xla/xla/stream_executor/cuda/cuda_fft.cc:485] Unable to register cuFFT factory: Attempting to register factory for plugin cuFFT when one has already been registered
+2024-10-30 13:10:03.145329: E external/local_xla/xla/stream_executor/cuda/cuda_dnn.cc:8454] Unable to register cuDNN factory: Attempting to register factory for plugin cuDNN when one has already been registered
+2024-10-30 13:10:03.151876: E external/local_xla/xla/stream_executor/cuda/cuda_blas.cc:1452] Unable to register cuBLAS factory: Attempting to register factory for plugin cuBLAS when one has already been registered
+2024-10-30 13:10:04.222713: W tensorflow/compiler/tf2tensorrt/utils/py_utils.cc:38] TF-TRT Warning: Could not find TensorRT
+/usr/local/lib/python3.10/dist-packages/torchvision/datapoints/__init__.py:12: UserWarning: The torchvision.datapoints and torchvision.transforms.v2 namespaces are still Beta. While we do not expect major breaking changes, some APIs may still change according to user feedback. Please submit any feedback you may have in this issue: https://github.com/pytorch/vision/issues/6753, and you can also check out https://github.com/pytorch/vision/issues/7319 to learn more about the APIs that we suspect might involve future changes. You can silence this warning by calling torchvision.disable_beta_transforms_warning().
+  warnings.warn(_BETA_TRANSFORMS_WARNING)
+/usr/local/lib/python3.10/dist-packages/torchvision/transforms/v2/__init__.py:54: UserWarning: The torchvision.datapoints and torchvision.transforms.v2 namespaces are still Beta. While we do not expect major breaking changes, some APIs may still change according to user feedback. Please submit any feedback you may have in this issue: https://github.com/pytorch/vision/issues/6753, and you can also check out https://github.com/pytorch/vision/issues/7319 to learn more about the APIs that we suspect might involve future changes. You can silence this warning by calling torchvision.disable_beta_transforms_warning().
+  warnings.warn(_BETA_TRANSFORMS_WARNING)
+[2024-10-30 13:10:05,149] [INFO] [launch.py:139:main] 0 NV_LIBNCCL_DEV_PACKAGE=libnccl-dev=2.19.3-1+cuda12.2
+[2024-10-30 13:10:05,149] [INFO] [launch.py:139:main] 0 NV_LIBNCCL_DEV_PACKAGE_VERSION=2.19.3-1
+[2024-10-30 13:10:05,149] [INFO] [launch.py:139:main] 0 NCCL_VERSION=2.19.3-1
+[2024-10-30 13:10:05,149] [INFO] [launch.py:139:main] 0 NV_LIBNCCL_DEV_PACKAGE_NAME=libnccl-dev
+[2024-10-30 13:10:05,149] [INFO] [launch.py:139:main] 0 NV_LIBNCCL_PACKAGE=libnccl2=2.19.3-1+cuda12.2
+[2024-10-30 13:10:05,150] [INFO] [launch.py:139:main] 0 NV_LIBNCCL_PACKAGE_NAME=libnccl2
+[2024-10-30 13:10:05,150] [INFO] [launch.py:139:main] 0 NV_LIBNCCL_PACKAGE_VERSION=2.19.3-1
+[2024-10-30 13:10:05,150] [INFO] [launch.py:146:main] WORLD INFO DICT: {'localhost': [0]}
+[2024-10-30 13:10:05,150] [INFO] [launch.py:152:main] nnodes=1, num_local_procs=1, node_rank=0
+[2024-10-30 13:10:05,150] [INFO] [launch.py:163:main] global_rank_mapping=defaultdict(<class 'list'>, {'localhost': [0]})
+[2024-10-30 13:10:05,150] [INFO] [launch.py:164:main] dist_world_size=1
+[2024-10-30 13:10:05,150] [INFO] [launch.py:168:main] Setting CUDA_VISIBLE_DEVICES=0
+[2024-10-30 13:10:05,150] [INFO] [launch.py:256:main] process 19054 spawned with command: ['/usr/bin/python3', '-u', 'llava/train/train_mem.py', '--local_rank=0', '--lora_enable', 'True', '--lora_r', '32', '--lora_alpha', '64', '--mm_projector_lr', '2e-5', '--deepspeed', './scripts/zero3.json', '--model_name_or_path', 'meta-llama/Llama-3.2-1B', '--version', 'v1', '--data_path', './playground/data/llava_v1_5_mix665k.json', '--image_folder', './playground/data', '--vision_tower', 'openai/clip-vit-large-patch14-336', '--pretrain_mm_mlp_adapter', './checkpoints/llava-v1.5-7b-pretrain/mm_projector.bin', '--mm_projector_type', 'mlp2x_gelu', '--mm_vision_select_layer', '-2', '--mm_use_im_start_end', 'False', '--mm_use_im_patch_token', 'False', '--image_aspect_ratio', 'pad', '--group_by_modality_length', 'True', '--bf16', 'False', '--output_dir', './checkpoints/llava-v1.5-13b-lora', '--num_train_epochs', '1', '--per_device_train_batch_size', '1', '--per_device_eval_batch_size', '4', '--gradient_accumulation_steps', '1', '--evaluation_strategy', 'no', '--save_strategy', 'steps', '--save_steps', '50000', '--save_total_limit', '1', '--learning_rate', '2e-4', '--weight_decay', '0.', '--warmup_ratio', '0.03', '--lr_scheduler_type', 'cosine', '--logging_steps', '1', '--tf32', 'False', '--model_max_length', '2048', '--gradient_checkpointing', 'True', '--dataloader_num_workers', '4', '--lazy_preprocess', 'True', '--report_to', 'wandb']
+2024-10-30 13:10:07.570492: E external/local_xla/xla/stream_executor/cuda/cuda_fft.cc:485] Unable to register cuFFT factory: Attempting to register factory for plugin cuFFT when one has already been registered
+2024-10-30 13:10:07.591259: E external/local_xla/xla/stream_executor/cuda/cuda_dnn.cc:8454] Unable to register cuDNN factory: Attempting to register factory for plugin cuDNN when one has already been registered
+2024-10-30 13:10:07.597543: E external/local_xla/xla/stream_executor/cuda/cuda_blas.cc:1452] Unable to register cuBLAS factory: Attempting to register factory for plugin cuBLAS when one has already been registered
+2024-10-30 13:10:08.715502: W tensorflow/compiler/tf2tensorrt/utils/py_utils.cc:38] TF-TRT Warning: Could not find TensorRT
+/usr/local/lib/python3.10/dist-packages/torchvision/datapoints/__init__.py:12: UserWarning: The torchvision.datapoints and torchvision.transforms.v2 namespaces are still Beta. While we do not expect major breaking changes, some APIs may still change according to user feedback. Please submit any feedback you may have in this issue: https://github.com/pytorch/vision/issues/6753, and you can also check out https://github.com/pytorch/vision/issues/7319 to learn more about the APIs that we suspect might involve future changes. You can silence this warning by calling torchvision.disable_beta_transforms_warning().
+  warnings.warn(_BETA_TRANSFORMS_WARNING)
+/usr/local/lib/python3.10/dist-packages/torchvision/transforms/v2/__init__.py:54: UserWarning: The torchvision.datapoints and torchvision.transforms.v2 namespaces are still Beta. While we do not expect major breaking changes, some APIs may still change according to user feedback. Please submit any feedback you may have in this issue: https://github.com/pytorch/vision/issues/6753, and you can also check out https://github.com/pytorch/vision/issues/7319 to learn more about the APIs that we suspect might involve future changes. You can silence this warning by calling torchvision.disable_beta_transforms_warning().
+  warnings.warn(_BETA_TRANSFORMS_WARNING)
+/usr/local/lib/python3.10/dist-packages/transformers/training_args.py:1559: FutureWarning: `evaluation_strategy` is deprecated and will be removed in version 4.46 of 🤗 Transformers. Use `eval_strategy` instead
+  warnings.warn(
+[2024-10-30 13:10:11,550] [INFO] [real_accelerator.py:219:get_accelerator] Setting ds_accelerator to cuda (auto detect)
+[2024-10-30 13:10:17,952] [INFO] [comm.py:652:init_distributed] cdb=None
+[2024-10-30 13:10:17,952] [INFO] [comm.py:683:init_distributed] Initializing TorchBackend in DeepSpeed with backend nccl
+You are using a model of type llama to instantiate a model of type llava_llama. This is not supported for all configurations of models and can yield errors.
+[2024-10-30 13:10:18,245] [INFO] [config.py:733:__init__] Config mesh_device None world_size = 1
+[2024-10-30 13:10:19,783] [INFO] [partition_parameters.py:348:__exit__] finished initializing model - num_params = 147, num_elems = 1.50B
+Adding LoRA adapters...
+Llama model detected, setting pad token to eos token
+/usr/local/lib/python3.10/dist-packages/torch/_utils.py:776: UserWarning: TypedStorage is deprecated. It will be removed in the future and UntypedStorage will be the only storage class. This should only matter to you if you are using storages directly.  To access UntypedStorage directly, use tensor.untyped_storage() instead of tensor.storage()
+  return self.fget.__get__(instance, owner)()
+[2024-10-30 13:10:37,921] [INFO] [config.py:733:__init__] Config mesh_device None world_size = 1
+[2024-10-30 13:10:38,354] [INFO] [partition_parameters.py:348:__exit__] finished initializing model - num_params = 538, num_elems = 1.80B
+Formatting inputs...Skip in lazy mode
+/content/MyLLaVA/LLaVA/llava/train/train.py:1075: FutureWarning: `tokenizer` is deprecated and will be removed in version 5.0.0 for `LLaVATrainer.__init__`. Use `processing_class` instead.
+  trainer = LLaVATrainer(model=model,
+Group has 22544384 parameters with requires_grad=True.
+Group has 0 parameters with requires_grad=True.
+Group has 20971520 parameters with requires_grad=True.
+Group has 8192 parameters with requires_grad=True.
+Parameter Offload: Total persistent parameters: 924672 in 312 params
+wandb: WARNING The `run_name` is currently set to the same value as `TrainingArguments.output_dir`. If this was not intended, please specify a different run name by setting the `TrainingArguments.run_name` parameter.
+wandb: Currently logged in as: roei-benzion (roei-benzion-tel-aviv-university). Use `wandb login --relogin` to force relogin
+wandb: wandb version 0.18.5 is available!  To upgrade, please run:
+wandb:  $ pip install wandb --upgrade
+wandb: Tracking run with wandb version 0.15.12
+wandb: Run data is saved locally in /content/MyLLaVA/LLaVA/wandb/run-20241030_131044-il4ktd5l
+wandb: Run `wandb offline` to turn off syncing.
+wandb: Syncing run ./checkpoints/llava-v1.5-13b-lora
+wandb: ⭐️ View project at https://wandb.ai/roei-benzion-tel-aviv-university/huggingface
+wandb: 🚀 View run at https://wandb.ai/roei-benzion-tel-aviv-university/huggingface/runs/il4ktd5l
+  0% 0/5688 [00:00<?, ?it/s]WARNING: tokenization mismatch: 127 vs. 128. (ignored)
+WARNING: tokenization mismatch: 864 vs. 869. (ignored)
+WARNING: tokenization mismatch: 1041 vs. 1046. (ignored)
+WARNING: tokenization mismatch: 1413 vs. 1416. (ignored)
+WARNING: tokenization mismatch: 325 vs. 327. (ignored)
+WARNING: tokenization mismatch: 863 vs. 871. (ignored)
+WARNING: tokenization mismatch: 308 vs. 309. (ignored)
+WARNING: tokenization mismatch: 294 vs. 295. (ignored)
+WARNING: tokenization mismatch: 1445 vs. 1456. (ignored)
+WARNING: tokenization mismatch: 1681 vs. 1692. (ignored)
 /usr/local/lib/python3.10/dist-packages/torch/utils/checkpoint.py:31: UserWarning: None of the inputs have requires_grad=True. Gradients will be None
   warnings.warn("None of the inputs have requires_grad=True. Gradients will be None")
+{'loss': 0.0, 'grad_norm': 0.0, 'learning_rate': 1.1695906432748538e-06, 'epoch': 0.0}
+  0% 1/5688 [00:04<6:46:44,  4.29s/it]WARNING: tokenization mismatch: 1396 vs. 1403. (ignored)
+{'loss': 0.0, 'grad_norm': 0.0, 'learning_rate': 2.3391812865497075e-06, 'epoch': 0.0}
+  0% 2/5688 [00:10<8:41:18,  5.50s/it]WARNING: tokenization mismatch: 180 vs. 182. (ignored)
+{'loss': 0.0, 'grad_norm': 0.0, 'learning_rate': 3.5087719298245615e-06, 'epoch': 0.0}
+  0% 3/5688 [00:12<5:49:51,  3.69s/it]WARNING: tokenization mismatch: 434 vs. 436. (ignored)
+{'loss': 0.0, 'grad_norm': 0.0, 'learning_rate': 4.678362573099415e-06, 'epoch': 0.0}
+  0% 4/5688 [00:13<4:18:54,  2.73s/it]WARNING: tokenization mismatch: 190 vs. 191. (ignored)
+{'loss': 0.0, 'grad_norm': 0.0, 'learning_rate': 5.8479532163742686e-06, 'epoch': 0.0}
+  0% 5/5688 [00:14<3:21:57,  2.13s/it]WARNING: tokenization mismatch: 527 vs. 540. (ignored)
+{'loss': 0.0, 'grad_norm': 0.0, 'learning_rate': 7.017543859649123e-06, 'epoch': 0.0}
+  0% 6/5688 [00:15<2:54:00,  1.84s/it]WARNING: tokenization mismatch: 304 vs. 305. (ignored)
+{'loss': 0.0, 'grad_norm': 0.0, 'learning_rate': 8.187134502923977e-06, 'epoch': 0.0}
+  0% 7/5688 [00:17<2:35:03,  1.64s/it]WARNING: tokenization mismatch: 215 vs. 216. (ignored)
+{'loss': 0.0, 'grad_norm': 0.0, 'learning_rate': 9.35672514619883e-06, 'epoch': 0.0}
+  0% 8/5688 [00:18<2:18:09,  1.46s/it]WARNING: tokenization mismatch: 1142 vs. 1145. (ignored)
+{'loss': 0.0, 'grad_norm': 0.0, 'learning_rate': 1.0526315789473684e-05, 'epoch': 0.0}
+  0% 9/5688 [00:20<2:51:13,  1.81s/it]WARNING: tokenization mismatch: 614 vs. 615. (ignored)
+{'loss': 0.0, 'grad_norm': 0.0, 'learning_rate': 1.1695906432748537e-05, 'epoch': 0.0}
+  0% 10/5688 [00:22<3:01:31,  1.92s/it]WARNING: tokenization mismatch: 374 vs. 379. (ignored)
+{'loss': 0.0, 'grad_norm': 0.0, 'learning_rate': 1.2865497076023392e-05, 'epoch': 0.0}
+  0% 11/5688 [00:24<3:05:52,  1.96s/it]WARNING: tokenization mismatch: 1183 vs. 1186. (ignored)
+{'loss': 0.0, 'grad_norm': 0.0, 'learning_rate': 1.4035087719298246e-05, 'epoch': 0.0}
+  0% 12/5688 [00:25<2:39:56,  1.69s/it]WARNING: tokenization mismatch: 321 vs. 322. (ignored)
+{'loss': 0.0, 'grad_norm': 0.0, 'learning_rate': 1.5204678362573099e-05, 'epoch': 0.0}
+  0% 13/5688 [00:27<2:21:48,  1.50s/it]WARNING: tokenization mismatch: 282 vs. 283. (ignored)
+{'loss': 0.0, 'grad_norm': 0.0, 'learning_rate': 1.6374269005847955e-05, 'epoch': 0.0}
+  0% 14/5688 [00:28<2:09:09,  1.37s/it]WARNING: tokenization mismatch: 156 vs. 157. (ignored)
+{'loss': 0.0, 'grad_norm': 0.0, 'learning_rate': 1.7543859649122806e-05, 'epoch': 0.0}
+  0% 15/5688 [00:29<2:00:56,  1.28s/it]WARNING: tokenization mismatch: 75 vs. 76. (ignored)
+{'loss': 0.0, 'grad_norm': 0.0, 'learning_rate': 1.871345029239766e-05, 'epoch': 0.0}
+  0% 16/5688 [00:30<1:54:49,  1.21s/it]WARNING: tokenization mismatch: 1643 vs. 1692. (ignored)
+{'loss': 0.0, 'grad_norm': 0.0, 'learning_rate': 1.9883040935672515e-05, 'epoch': 0.0}
+  0% 17/5688 [00:31<1:50:35,  1.17s/it]WARNING: tokenization mismatch: 470 vs. 471. (ignored)
+{'loss': 0.0, 'grad_norm': 0.0, 'learning_rate': 2.105263157894737e-05, 'epoch': 0.0}
+  0% 18/5688 [00:32<2:04:34,  1.32s/it]WARNING: tokenization mismatch: 326 vs. 327. (ignored)
+{'loss': 0.0, 'grad_norm': 0.0, 'learning_rate': 2.2222222222222223e-05, 'epoch': 0.0}
+  0% 19/5688 [00:34<1:57:57,  1.25s/it]WARNING: tokenization mismatch: 1077 vs. 1087. (ignored)
+{'loss': 0.0, 'grad_norm': 0.0, 'learning_rate': 2.3391812865497074e-05, 'epoch': 0.0}
+  0% 20/5688 [00:35<1:52:40,  1.19s/it]WARNING: tokenization mismatch: 878 vs. 884. (ignored)
+{'loss': 0.0, 'grad_norm': 0.0, 'learning_rate': 2.456140350877193e-05, 'epoch': 0.0}
+  0% 21/5688 [00:36<2:08:43,  1.36s/it]WARNING: tokenization mismatch: 891 vs. 894. (ignored)
+{'loss': 0.0, 'grad_norm': 0.0, 'learning_rate': 2.5730994152046783e-05, 'epoch': 0.0}
+  0% 22/5688 [00:37<2:00:01,  1.27s/it]WARNING: tokenization mismatch: 1081 vs. 1084. (ignored)
+{'loss': 0.0, 'grad_norm': 0.0, 'learning_rate': 2.6900584795321637e-05, 'epoch': 0.0}
+  0% 23/5688 [00:38<1:53:48,  1.21s/it]WARNING: tokenization mismatch: 252 vs. 255. (ignored)
+{'loss': 0.0, 'grad_norm': 0.0, 'learning_rate': 2.8070175438596492e-05, 'epoch': 0.0}
+  0% 24/5688 [00:40<1:49:34,  1.16s/it]WARNING: tokenization mismatch: 280 vs. 281. (ignored)
+{'loss': 0.0, 'grad_norm': 0.0, 'learning_rate': 2.9239766081871346e-05, 'epoch': 0.0}
+  0% 25/5688 [00:41<1:46:20,  1.13s/it]WARNING: tokenization mismatch: 955 vs. 956. (ignored)
+{'loss': 0.0, 'grad_norm': 0.0, 'learning_rate': 3.0409356725146197e-05, 'epoch': 0.0}
+  0% 26/5688 [00:43<2:28:08,  1.57s/it]WARNING: tokenization mismatch: 283 vs. 285. (ignored)
+{'loss': 0.0, 'grad_norm': 0.0, 'learning_rate': 3.157894736842105e-05, 'epoch': 0.0}
+  0% 27/5688 [00:44<2:13:46,  1.42s/it]WARNING: tokenization mismatch: 341 vs. 342. (ignored)
+wandb: 429 encountered (Filestream rate limit exceeded, retrying in 2.0 seconds.), retrying request
+{'loss': 0.0, 'grad_norm': 0.0, 'learning_rate': 3.274853801169591e-05, 'epoch': 0.0}
+  0% 28/5688 [00:45<2:04:00,  1.31s/it]WARNING: tokenization mismatch: 786 vs. 793. (ignored)
+{'loss': 0.0, 'grad_norm': 0.0, 'learning_rate': 3.391812865497076e-05, 'epoch': 0.01}
+  1% 29/5688 [00:47<2:11:56,  1.40s/it]WARNING: tokenization mismatch: 143 vs. 144. (ignored)
+{'loss': 0.0, 'grad_norm': 0.0, 'learning_rate': 3.508771929824561e-05, 'epoch': 0.01}
+  1% 30/5688 [00:48<2:09:00,  1.37s/it]WARNING: tokenization mismatch: 688 vs. 695. (ignored)
+{'loss': 0.0, 'grad_norm': 0.0, 'learning_rate': 3.625730994152047e-05, 'epoch': 0.01}
+  1% 31/5688 [00:50<2:07:09,  1.35s/it]WARNING: tokenization mismatch: 590 vs. 593. (ignored)
+[2024-10-30 13:11:36,331] [INFO] [launch.py:319:sigkill_handler] Killing subprocess 19054
 Traceback (most recent call last):
-  File "/content/MyLLaVA/LLaVA/llava/train/train_mem.py", line 4, in <module>
-    train(attn_implementation="flash_attention_2")
-  File "/content/MyLLaVA/LLaVA/llava/train/train.py", line 984, in train
-    trainer.train()
-  File "/usr/local/lib/python3.10/dist-packages/transformers/trainer.py", line 2122, in train
-    return inner_training_loop(
-  File "/usr/local/lib/python3.10/dist-packages/transformers/trainer.py", line 2474, in _inner_training_loop
-    tr_loss_step = self.training_step(model, inputs, num_items_in_batch)
-  File "/usr/local/lib/python3.10/dist-packages/transformers/trainer.py", line 3572, in training_step
-    loss = self.compute_loss(model, inputs, num_items_in_batch=num_items_in_batch)
-  File "/usr/local/lib/python3.10/dist-packages/transformers/trainer.py", line 3625, in compute_loss
-    outputs = model(**inputs)
-  File "/usr/local/lib/python3.10/dist-packages/torch/nn/modules/module.py", line 1501, in _call_impl
-    return forward_call(*args, **kwargs)
-  File "/usr/local/lib/python3.10/dist-packages/deepspeed/utils/nvtx.py", line 18, in wrapped_fn
-    ret_val = func(*args, **kwargs)
-  File "/usr/local/lib/python3.10/dist-packages/deepspeed/runtime/engine.py", line 1899, in forward
-    loss = self.module(*inputs, **kwargs)
-  File "/usr/local/lib/python3.10/dist-packages/torch/nn/modules/module.py", line 1538, in _call_impl
-    result = forward_call(*args, **kwargs)
-  File "/usr/local/lib/python3.10/dist-packages/peft/peft_model.py", line 922, in forward
-    return self.base_model(
-  File "/usr/local/lib/python3.10/dist-packages/torch/nn/modules/module.py", line 1538, in _call_impl
-    result = forward_call(*args, **kwargs)
-  File "/content/MyLLaVA/LLaVA/llava/model/language_model/llava_llama.py", line 82, in forward
-    ) = self.prepare_inputs_labels_for_multimodal(
-  File "/content/MyLLaVA/LLaVA/llava/model/llava_arch.py", line 248, in prepare_inputs_labels_for_multimodal
-    cur_input_embeds = torch.cat([cur_input_embeds_1, cur_image_features[0:0]], dim=0)
-
+  File "/usr/local/bin/deepspeed", line 6, in <module>
+    main()
+  File "/usr/local/lib/python3.10/dist-packages/deepspeed/launcher/runner.py", line 623, in main
+    result.wait()
+  File "/usr/lib/python3.10/subprocess.py", line 1209, in wait
+    return self._wait(timeout=timeout)
+  File "/usr/lib/python3.10/subprocess.py", line 1959, in _wait
+    (pid, sts) = self._try_wait(0)
+  File "/usr/lib/python3.10/subprocess.py", line 1917, in _try_wait
+    (pid, sts) = os.waitpid(self.pid, wait_flags)
+KeyboardInterrupt
+[2024-10-30 13:11:36,666] [INFO] [launch.py:328:sigkill_handler] Main process received SIGINT, exiting
+^C

@@ -334,9 +334,10 @@ def preprocess_llama_2(
     tokenizer: transformers.PreTrainedTokenizer,
     has_image: bool = False
 ) -> Dict:
+    print("Preprocessing LLAMA 2")
     conv = conversation_lib.default_conversation.copy()
     roles = {"human": conv.roles[0], "gpt": conv.roles[1]}
-
+    print("Special tokens:", tokenizer.special_tokens_map)
     # Apply prompt templates
     conversations = []
     for i, source in enumerate(sources):
@@ -438,8 +439,7 @@ def preprocess_v1(
     if has_image:
         input_ids = torch.stack([tokenizer_image_token(prompt, tokenizer, return_tensors='pt') for prompt in conversations], dim=0)
     else:
-        if tokenizer.pad_token is None:
-            tokenizer.add_special_tokens({'pad_token': '[PAD]'})
+        
         input_ids = tokenizer(
             conversations,
             return_tensors="pt",
@@ -625,13 +625,19 @@ def preprocess(
     3. Tokenize the concatenated conversation;
     4. Make a deepcopy as the target. Mask human words with IGNORE_INDEX.
     """
+    print("Preprocessing")
+    print(conversation_lib.default_conversation.sep_style, conversation_lib.default_conversation.version)
     if conversation_lib.default_conversation.sep_style == conversation_lib.SeparatorStyle.PLAIN:
+        print("Preprocessing Plain")
         return preprocess_plain(sources, tokenizer)
     if conversation_lib.default_conversation.sep_style == conversation_lib.SeparatorStyle.LLAMA_2:
+        print("Preprocessing LLAMA 2")
         return preprocess_llama_2(sources, tokenizer, has_image=has_image)
     if conversation_lib.default_conversation.version.startswith("v1"):
+        print("Preprocessing V1")
         return preprocess_v1(sources, tokenizer, has_image=has_image)
     if conversation_lib.default_conversation.version == "mpt":
+        print("Preprocessing MPT")
         return preprocess_mpt(sources, tokenizer, has_image=has_image)
     # add end signal and concatenate together
     conversations = []
@@ -900,6 +906,7 @@ def train(attn_implementation=None):
             #use_fast=False,
             use_fast=True
         )
+        print(tokenizer.name_or_path, model_args.model_name_or_path)
     if model_args.version == "v0":
         if tokenizer.pad_token is None:
             smart_tokenizer_and_embedding_resize(
@@ -910,14 +917,20 @@ def train(attn_implementation=None):
     elif model_args.version == "v0.5":
         tokenizer.pad_token = tokenizer.unk_token
     else:
-        tokenizer.pad_token = tokenizer.unk_token
-        if model_args.version in conversation_lib.conv_templates:
+        #tokenizer.pad_token = tokenizer.eos_token
+        #tokenizer.pad_token = tokenizer.unk_token
+        if "Llama" in model_args.model_name_or_path:
+            print("Llama model detected, setting pad token to eos token")
+            tokenizer.add_special_tokens({
+                "eos_token": "</s>",
+                "pad_token": "</s>"
+            })
+            conversation_lib.default_conversation = conversation_lib.conv_templates["llama_2"]
+        elif model_args.version in conversation_lib.conv_templates:
             conversation_lib.default_conversation = conversation_lib.conv_templates[model_args.version]
         else:
             conversation_lib.default_conversation = conversation_lib.conv_templates["vicuna_v1"]
-        if tokenizer.pad_token is None:
-            tokenizer.add_special_tokens({'pad_token': '[PAD]'})
-            model.resize_token_embeddings(len(tokenizer))
+        
             
     if model_args.vision_tower is not None:
         model.get_model().initialize_vision_modules(
