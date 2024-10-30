@@ -29,3 +29,4 @@ Traceback (most recent call last):
     ) = self.prepare_inputs_labels_for_multimodal(
   File "/content/MyLLaVA/LLaVA/llava/model/llava_arch.py", line 248, in prepare_inputs_labels_for_multimodal
     cur_input_embeds = torch.cat([cur_input_embeds_1, cur_image_features[0:0]], dim=0)
+
