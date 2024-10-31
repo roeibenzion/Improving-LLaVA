@@ -256,24 +256,21 @@ class LLaVATrainer(Trainer):
             pass
         else:
             super(LLaVATrainer, self)._save(output_dir, state_dict)
-    def log_predictions(self, num_samples: int = 5):
-        self.model.eval()
-        # Get a batch of samples from the validation dataset
-        inputs = next(iter(self.get_eval_dataloader()))  # Adjust if you have specific sampling logic
-        inputs = {k: v.to(self.args.device) for k, v in inputs.items()}
 
-        with torch.no_grad():
-            outputs = self.model(**inputs)
-            preds = torch.argmax(outputs.logits, dim=-1)  # Adjust based on your model's output format
-            
-        # Log predictions to W&B or print them
-        for i in range(num_samples):
-            print(f"Sample {i} Prediction: {preds[i].cpu().numpy()}")
-            print(f"Sample {i} Ground Truth: {inputs['labels'][i].cpu().numpy()}")
-    
-    # Override on_log to log predictions at intervals
-    def on_log(self, logs=None, **kwargs):
-        super().on_log(logs, **kwargs)
-        # Log predictions every few logging steps
-        if self.state.global_step % self.args.logging_steps == 0:
-            self.log_predictions(num_samples=3)  # Change `num_samples` as needed
+from transformers import TrainerCallback
+
+class StepLoggingCallback(TrainerCallback):
+    def on_step_end(self, args, state, control, **kwargs):
+        logs = kwargs.get("logs", {})
+        sample = kwargs["inputs"]["input_ids"]  # Assuming input_ids are part of the input
+        prediction = kwargs["outputs"].logits.argmax(dim=-1)  # Get the predicted token
+        ground_truth = kwargs["labels"]  # Assuming labels are provided in inputs
+
+        # Log sample, prediction, and ground truth
+        print(f"Step {state.global_step}")
+        print("Sample:", sample)
+        print("Prediction:", prediction)
+        print("Ground Truth:", ground_truth)
+
+        # Integrate this with W&B or other logging solutions if required
+        # wandb.log({"Sample": sample, "Prediction": prediction, "Ground Truth": ground_truth}, step=state.global_step)
