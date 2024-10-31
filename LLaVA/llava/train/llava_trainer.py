@@ -158,7 +158,6 @@ class LLaVATrainer(Trainer):
             return super().create_optimizer()
 
         opt_model = self.model
-        print(opt_model)
         if self.optimizer is None:
             decay_parameters = get_parameter_names(opt_model, ALL_LAYERNORM_LAYERS)
             decay_parameters = [name for name in decay_parameters if "bias" not in name]

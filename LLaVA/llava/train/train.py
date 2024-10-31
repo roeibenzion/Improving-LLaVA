@@ -334,10 +334,8 @@ def preprocess_llama_2(
     tokenizer: transformers.PreTrainedTokenizer,
     has_image: bool = False
 ) -> Dict:
-    print("Preprocessing LLAMA 2")
     conv = conversation_lib.default_conversation.copy()
     roles = {"human": conv.roles[0], "gpt": conv.roles[1]}
-    print("Special tokens:", tokenizer.special_tokens_map)
     # Apply prompt templates
     conversations = []
     for i, source in enumerate(sources):
@@ -373,29 +371,27 @@ def preprocess_llama_2(
     sep = "[/INST] "
     for conversation, target in zip(conversations, targets):
         total_len = int(target.ne(tokenizer.pad_token_id).sum())
-
         rounds = conversation.split(conv.sep2)
         cur_len = 1
         target[:cur_len] = IGNORE_INDEX
         for i, rou in enumerate(rounds):
             if rou == "":
                 break
-
+            
             parts = rou.split(sep)
             if len(parts) != 2:
                 break
             parts[0] += sep
 
             if has_image:
-                round_len = len(tokenizer_image_token(rou, tokenizer))
+                round_len = len(tokenizer_image_token(rou, tokenizer))-1
                 instruction_len = len(tokenizer_image_token(parts[0], tokenizer)) - 2
             else:
-                round_len = len(tokenizer(rou).input_ids)
+                round_len = len(tokenizer(rou).input_ids)-1
                 instruction_len = len(tokenizer(parts[0]).input_ids) - 2
-
             target[cur_len : cur_len + instruction_len] = IGNORE_INDEX
-
             cur_len += round_len
+            #cur_len += round_len+1
         target[cur_len:] = IGNORE_INDEX
 
         if cur_len < tokenizer.model_max_length:
@@ -625,19 +621,14 @@ def preprocess(
     3. Tokenize the concatenated conversation;
     4. Make a deepcopy as the target. Mask human words with IGNORE_INDEX.
     """
-    print("Preprocessing")
     print(conversation_lib.default_conversation.sep_style, conversation_lib.default_conversation.version)
     if conversation_lib.default_conversation.sep_style == conversation_lib.SeparatorStyle.PLAIN:
-        print("Preprocessing Plain")
         return preprocess_plain(sources, tokenizer)
     if conversation_lib.default_conversation.sep_style == conversation_lib.SeparatorStyle.LLAMA_2:
-        print("Preprocessing LLAMA 2")
         return preprocess_llama_2(sources, tokenizer, has_image=has_image)
     if conversation_lib.default_conversation.version.startswith("v1"):
-        print("Preprocessing V1")
         return preprocess_v1(sources, tokenizer, has_image=has_image)
     if conversation_lib.default_conversation.version == "mpt":
-        print("Preprocessing MPT")
         return preprocess_mpt(sources, tokenizer, has_image=has_image)
     # add end signal and concatenate together
     conversations = []
