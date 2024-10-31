@@ -256,23 +256,3 @@ class LLaVATrainer(Trainer):
             pass
         else:
             super(LLaVATrainer, self)._save(output_dir, state_dict)
-    def training_step(self, model, inputs):
-        # Call the original training_step method to get the loss
-        output = super().training_step(model, inputs)
-        
-        # Ensure model is in evaluation mode for prediction
-        model.eval()
-        with torch.no_grad():
-            # Get the model's outputs (logits)
-            outputs = model(**inputs)
-            predictions = outputs.logits.argmax(dim=-1)
-        model.train()
-        
-        # Access inputs and labels
-        input_ids = inputs.get('input_ids')
-        labels = inputs.get('labels')
-        
-        # Convert tensors to readable format if necessary
-        input_text = tokenizer.batch_decode(input_ids, skip_special_tokens=True)
-        predicted_text = tokenizer.batch_decode(predictions, skip_special_tokens=True)
-        ground_truth_text = tokenizer.batch_decode(labels, skip_special_tokens=True)
