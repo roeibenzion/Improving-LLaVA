@@ -256,3 +256,24 @@ class LLaVATrainer(Trainer):
             pass
         else:
             super(LLaVATrainer, self)._save(output_dir, state_dict)
+    def log_predictions(self, num_samples: int = 5):
+        self.model.eval()
+        # Get a batch of samples from the validation dataset
+        inputs = next(iter(self.get_eval_dataloader()))  # Adjust if you have specific sampling logic
+        inputs = {k: v.to(self.args.device) for k, v in inputs.items()}
+
+        with torch.no_grad():
+            outputs = self.model(**inputs)
+            preds = torch.argmax(outputs.logits, dim=-1)  # Adjust based on your model's output format
+            
+        # Log predictions to W&B or print them
+        for i in range(num_samples):
+            print(f"Sample {i} Prediction: {preds[i].cpu().numpy()}")
+            print(f"Sample {i} Ground Truth: {inputs['labels'][i].cpu().numpy()}")
+    
+    # Override on_log to log predictions at intervals
+    def on_log(self, logs=None, **kwargs):
+        super().on_log(logs, **kwargs)
+        # Log predictions every few logging steps
+        if self.state.global_step % self.args.logging_steps == 0:
+            self.log_predictions(num_samples=3)  # Change `num_samples` as needed
