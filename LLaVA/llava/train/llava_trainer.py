@@ -256,21 +256,23 @@ class LLaVATrainer(Trainer):
             pass
         else:
             super(LLaVATrainer, self)._save(output_dir, state_dict)
-
-from transformers import TrainerCallback
-
-class StepLoggingCallback(TrainerCallback):
-    def on_step_end(self, args, state, control, **kwargs):
-        logs = kwargs.get("logs", {})
-        sample = kwargs["inputs"]["input_ids"]  # Assuming input_ids are part of the input
-        prediction = kwargs["outputs"].logits.argmax(dim=-1)  # Get the predicted token
-        ground_truth = kwargs["labels"]  # Assuming labels are provided in inputs
-
-        # Log sample, prediction, and ground truth
-        print(f"Step {state.global_step}")
-        print("Sample:", sample)
-        print("Prediction:", prediction)
-        print("Ground Truth:", ground_truth)
-
-        # Integrate this with W&B or other logging solutions if required
-        # wandb.log({"Sample": sample, "Prediction": prediction, "Ground Truth": ground_truth}, step=state.global_step)
+    def training_step(self, model, inputs):
+        # Call the original training_step method to get the loss
+        output = super().training_step(model, inputs)
+        
+        # Ensure model is in evaluation mode for prediction
+        model.eval()
+        with torch.no_grad():
+            # Get the model's outputs (logits)
+            outputs = model(**inputs)
+            predictions = outputs.logits.argmax(dim=-1)
+        model.train()
+        
+        # Access inputs and labels
+        input_ids = inputs.get('input_ids')
+        labels = inputs.get('labels')
+        
+        # Convert tensors to readable format if necessary
+        input_text = tokenizer.batch_decode(input_ids, skip_special_tokens=True)
+        predicted_text = tokenizer.batch_decode(predictions, skip_special_tokens=True)
+        ground_truth_text = tokenizer.batch_decode(labels, skip_special_tokens=True)
