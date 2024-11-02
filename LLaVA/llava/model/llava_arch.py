@@ -154,6 +154,9 @@ class LlavaMetaForCausalLM(ABC):
         self, input_ids, position_ids, attention_mask, past_key_values, labels,
         images, image_sizes=None
     ):
+        # NOTE: added trainable projection matrix
+        lin_layer = torch.nn.Linear(4096, 2048).to(self.device)
+        lin_layer.requires_grad = True  
         vision_tower = self.get_vision_tower()
         if vision_tower is None or images is None or input_ids.shape[1] == 1:
             return input_ids, position_ids, attention_mask, past_key_values, None, labels
@@ -243,7 +246,6 @@ class LlavaMetaForCausalLM(ABC):
                 cur_image_features = image_features[cur_image_idx]
                 cur_input_embeds_1 = self.get_model().embed_tokens(cur_input_ids)
                 # NOTE: added trainable projection matrix
-                lin_layer = torch.nn.Linear(4096, 2048).to(self.device)
                 cur_image_features = lin_layer(cur_image_features)
                 cur_input_embeds = torch.cat([cur_input_embeds_1, cur_image_features[0:0]], dim=0)
                 new_input_embeds.append(cur_input_embeds)
@@ -274,7 +276,8 @@ class LlavaMetaForCausalLM(ABC):
                     cur_new_labels.append(torch.full((cur_image_features.shape[0],), IGNORE_INDEX, device=cur_labels.device, dtype=cur_labels.dtype))
 
             cur_new_input_embeds = [x.to(self.device) for x in cur_new_input_embeds]
-
+            # NOTE: added projection matrix for inference
+            cur_image_features = lin_layer(cur_image_features)
             cur_new_input_embeds = torch.cat(cur_new_input_embeds)
             cur_new_labels = torch.cat(cur_new_labels)
 
