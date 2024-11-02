@@ -24,7 +24,8 @@ done
 wait
 
 output_file=./playground/data/eval/vqav2/answers/$SPLIT/$CKPT/merge.jsonl
-
+# make the dir if it doesn't exist
+mkdir -p $(dirname "$output_file")
 # Clear out the output file if it exists.
 > "$output_file"
 
