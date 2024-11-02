@@ -24,6 +24,10 @@ from llava.constants import DEFAULT_IMAGE_PATCH_TOKEN, DEFAULT_IM_START_TOKEN, D
 
 
 def load_pretrained_model(model_path, model_base, model_name, load_8bit=False, load_4bit=False, device_map="auto", device="cuda", use_flash_attn=False, **kwargs):
+    print(f"Loading model from {model_path}...")
+    print(f"Model name: {model_name}")
+    print(f"Model base: {model_base}")
+    
     kwargs = {"device_map": device_map, **kwargs}
 
     if device != "cuda":
@@ -113,6 +117,7 @@ def load_pretrained_model(model_path, model_base, model_name, load_8bit=False, l
                     **kwargs
                 )
             else:
+                model_path = '/content/MyLLaVA/LLaVA/checkpoints/Llama-3.2-1B-lora/checkpoint-369'
                 tokenizer = AutoTokenizer.from_pretrained(model_path, use_fast=False)
                 model = LlavaLlamaForCausalLM.from_pretrained(
                     model_path,
@@ -138,6 +143,7 @@ def load_pretrained_model(model_path, model_base, model_name, load_8bit=False, l
                 tokenizer = AutoTokenizer.from_pretrained(model_path, use_fast=True)
                 model = AutoModelForCausalLM.from_pretrained(model_path, low_cpu_mem_usage=True, trust_remote_code=True, **kwargs)
             else:
+                model_path = '/content/MyLLaVA/LLaVA/checkpoints/Llama-3.2-1B-lora/checkpoint-369'
                 tokenizer = AutoTokenizer.from_pretrained(model_path, use_fast=False)
                 model = AutoModelForCausalLM.from_pretrained(model_path, low_cpu_mem_usage=True, **kwargs)
 

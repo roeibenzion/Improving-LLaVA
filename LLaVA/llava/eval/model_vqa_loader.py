@@ -40,10 +40,13 @@ class CustomDataset(Dataset):
         line = self.questions[index]
         image_file = line["image"]
         qs = line["text"]
+        '''
         if self.model_config.mm_use_im_start_end:
             qs = DEFAULT_IM_START_TOKEN + DEFAULT_IMAGE_TOKEN + DEFAULT_IM_END_TOKEN + '\n' + qs
         else:
             qs = DEFAULT_IMAGE_TOKEN + '\n' + qs
+        '''
+        qs = DEFAULT_IMAGE_TOKEN + '\n' + qs
 
         conv = conv_templates[args.conv_mode].copy()
         conv.append_message(conv.roles[0], qs)
