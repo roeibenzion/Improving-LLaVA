@@ -262,22 +262,28 @@ class LlavaMetaForCausalLM(ABC):
                 cur_labels_noim.append(cur_labels[image_token_indices[i]+1:image_token_indices[i+1]])
             split_sizes = [x.shape[0] for x in cur_labels_noim]
             cur_input_embeds = self.get_model().embed_tokens(torch.cat(cur_input_ids_noim))
+            print(f"1: {cur_input_embeds.shape}")
             cur_input_embeds_no_im = torch.split(cur_input_embeds, split_sizes, dim=0)
+            for i in range(len(cur_input_embeds_no_im)):
+                print(f"2: {cur_input_embeds_no_im[i].shape}")
             cur_new_input_embeds = []
             cur_new_labels = []
 
             for i in range(num_images + 1):
                 cur_new_input_embeds.append(cur_input_embeds_no_im[i])
+                print(f"3: {cur_input_embeds_no_im[i].shape}")
                 cur_new_labels.append(cur_labels_noim[i])
                 if i < num_images:
                     cur_image_features = image_features[cur_image_idx]
+                    # NOTE: apply lin layer
+                    print(f"3.5: {cur_image_features.shape}")
+                    cur_image_features = lin_layer(cur_image_features.to(lin_layer.weight.dtype))
                     cur_image_idx += 1
                     cur_new_input_embeds.append(cur_image_features)
+                    print(f"4: {cur_image_features.shape}")
                     cur_new_labels.append(torch.full((cur_image_features.shape[0],), IGNORE_INDEX, device=cur_labels.device, dtype=cur_labels.dtype))
 
             cur_new_input_embeds = [x.to(self.device) for x in cur_new_input_embeds]
-            # NOTE: added projection matrix for inference
-            cur_image_features = lin_layer(cur_image_features)
             cur_new_input_embeds = torch.cat(cur_new_input_embeds)
             cur_new_labels = torch.cat(cur_new_labels)
 
