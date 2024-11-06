@@ -103,6 +103,8 @@ def eval_model(args):
         cur_prompt = line["text"]
 
         input_ids = input_ids.to(device='cuda', non_blocking=True)
+        print("input to the model:")
+        print(input_ids)
 
         with torch.inference_mode():
             output_ids = model.generate(

@@ -146,13 +146,14 @@ def load_pretrained_model(model_path, model_base, model_name, load_8bit=False, l
                 tokenizer = AutoTokenizer.from_pretrained(model_path, use_fast=True)
                 model = AutoModelForCausalLM.from_pretrained(model_path, low_cpu_mem_usage=True, trust_remote_code=True, **kwargs)
             else:
-                model_path = '/content/MyLLaVA/LLaVA/checkpoints/Llama-3.2-1B-lora/checkpoint-369'
                 tokenizer = AutoTokenizer.from_pretrained(model_path, use_fast=False)
+                p = '/home/roeibenzion/LLava_Project/LLaVA/checkpoints/llava-v1.5-1b-pretrain-MLP/checkpoint-5000'
+                kwargs['config'] = AutoConfig.from_pretrained(p)
                 model = AutoModelForCausalLM.from_pretrained(model_path, low_cpu_mem_usage=True, **kwargs)
 
     image_processor = None
 
-    if 'llava' in model_name.lower():
+    if 'llava' in model_name.lower() or '1B' in model_name:
         mm_use_im_start_end = getattr(model.config, "mm_use_im_start_end", False)
         mm_use_im_patch_token = getattr(model.config, "mm_use_im_patch_token", True)
         if mm_use_im_patch_token:
