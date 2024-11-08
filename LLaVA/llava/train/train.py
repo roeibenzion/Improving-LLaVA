@@ -56,43 +56,17 @@ from transformers import TrainerCallback, TrainingArguments, TrainerState, Train
 import os
 import subprocess
 
-class InferenceCallback(TrainerCallback):
-    def on_step_end(
-        self,
-        args: TrainingArguments,
-        state: TrainerState,
-        control: TrainerControl,
-        model=None,
-        **kwargs,
-    ):
-        # Check if it's time to run inference
-        if state.global_step % 1000 == 0 and state.global_step != 0:
-            # Ensure only the main process runs the inference
-            if args.local_rank == -1 or args.local_rank == 0:
-                # Define the checkpoint directory
-                output_dir = os.path.join(args.output_dir, f'checkpoint-{state.global_step}')
-                os.makedirs(output_dir, exist_ok=True)
-                # Save the model
-                model.save_pretrained(output_dir)
-                # Define the model path and image file for inference
-                model_path = output_dir
-                image_file = "https://llava-vl.github.io/static/images/view.jpg"
-                
-                # Run the inference command and capture output
-                cmd = f'python -m llava.serve.cli --model-path {model_path} --image-file "{image_file}"'
-                print(f"Running inference at step {state.global_step}: {cmd}")
-                
-                # Execute the command and capture the output
-                result = subprocess.run(cmd, shell=True, capture_output=True, text=True)
-                
-                # Write the output to a file
-                with open('./test_img', 'a') as f:
-                    f.write(f"Step {state.global_step}:\n")
-                    f.write(result.stdout)  # Write the standard output
-                    f.write("\n\n")
-                    
-                if result.stderr:
-                    print(f"Error during inference at step {state.global_step}: {result.stderr}")
+from transformers import TrainerCallback, TrainingArguments, TrainerState, TrainerControl
+import os
+import torch
+from PIL import Image
+import requests
+from io import BytesIO
+from transformers import TextStreamer
+from llava.constants import IMAGE_TOKEN_INDEX, DEFAULT_IMAGE_TOKEN, DEFAULT_IM_START_TOKEN, DEFAULT_IM_END_TOKEN
+from llava.conversation import conv_templates, SeparatorStyle
+from llava.mm_utils import process_images, tokenizer_image_token, get_model_name_from_path
+from llava.utils import disable_torch_init
 
 
 
@@ -1032,15 +1006,15 @@ def train(attn_implementation=None):
     model=model,
     tokenizer=tokenizer,
     args=training_args,
-    callbacks=[InferenceCallback()],
     **data_module
 )
+    
     if list(pathlib.Path(training_args.output_dir).glob("checkpoint-*")):
         trainer.train(resume_from_checkpoint=True)
     else:
         trainer.train()
     trainer.save_state()
-
+    #trainer.train()
     model.config.use_cache = True
 
     if training_args.lora_enable:

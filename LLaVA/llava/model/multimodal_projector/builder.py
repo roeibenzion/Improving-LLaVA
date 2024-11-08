@@ -52,7 +52,7 @@ class SimpleResBlock(nn.Module):
 def get_projector_from_7b(config, hidden_size=4096):
     # Define the projector structure
     mm_hidden_size = config.mm_hidden_size
-    mlp_depth = config.mlp_depth
+    mlp_depth = 2
     modules = [nn.Linear(mm_hidden_size, hidden_size)]
     
     for _ in range(1, mlp_depth):
@@ -93,6 +93,7 @@ def build_vision_projector(config, delay_load=False, **kwargs):
         # Verify which parameters are trainable
         trainable_params = [name for name, param in projector.named_parameters() if param.requires_grad]
         print("Trainable parameters:", trainable_params)
+        return projector
         
     if projector_type == 'linear':
         return nn.Linear(config.mm_hidden_size, config.hidden_size)

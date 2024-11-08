@@ -2,7 +2,7 @@
 
 deepspeed llava/train/train_mem.py \
     --deepspeed ./scripts/zero2.json \
-    --model_name_or_path meta-llama/Llama-3.2-1B \
+    --model_name_or_path meta-llama/Llama-3.2-1B-Instruct \
     --version plain \
     --data_path ./playground/data/LLaVA-Pretrain/blip_laion_cc_sbu_558k.json \
     --image_folder ./playground/data/LLaVA-Pretrain/images \
