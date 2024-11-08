@@ -49,10 +49,51 @@ class SimpleResBlock(nn.Module):
         x = self.pre_norm(x)
         return x + self.proj(x)
 
+def get_projector_from_7b(config, hidden_size=4096):
+    # Define the projector structure
+    mm_hidden_size = config.mm_hidden_size
+    mlp_depth = config.mlp_depth
+    modules = [nn.Linear(mm_hidden_size, hidden_size)]
+    
+    for _ in range(1, mlp_depth):
+        modules.append(nn.GELU())
+        modules.append(nn.Linear(hidden_size, hidden_size))
+    
+    # Add the new trainable layers
+    modules.append(nn.GELU())
+    modules.append(nn.Linear(hidden_size, config.hidden_size))
+    
+    # Build the sequential model
+    projector = nn.Sequential(*modules)
+    return projector
 
 def build_vision_projector(config, delay_load=False, **kwargs):
     projector_type = getattr(config, 'mm_projector_type', 'linear')
 
+    if projector_type == 'from_pretrained':
+        # Initialize the projector
+        projector = get_projector_from_7b(config)
+
+        # Path to the pretrained state dict
+        p = './checkpoints/llava-v1.5-7b-pretrain/mm_projector.bin'
+
+        # Load pretrained state dict
+        pretrained_state_dict = torch.load(p, map_location="cpu")  # Adjust map_location as needed
+        projector.load_state_dict(pretrained_state_dict, strict=False)  # Allow partial loading for new layers
+
+        # Freeze all parameters except the new layers
+        for name, param in projector.named_parameters():
+            # Freeze all parameters by default
+            param.requires_grad = False
+
+        # Set only the new layers to be trainable
+        for name, param in list(projector.named_parameters())[-4:]:  # Last 4 entries (GELU + Linear + GELU + Linear)
+            param.requires_grad = True
+
+        # Verify which parameters are trainable
+        trainable_params = [name for name, param in projector.named_parameters() if param.requires_grad]
+        print("Trainable parameters:", trainable_params)
+        
     if projector_type == 'linear':
         return nn.Linear(config.mm_hidden_size, config.hidden_size)
 
@@ -72,5 +113,5 @@ def build_vision_projector(config, delay_load=False, **kwargs):
         return IdentityMap()
     if projector_type == 'presiver':
         return PresiverResampler(config.hidden_size, num_layers=kwargs.get('num_layers', 2))
-
+    
     raise ValueError(f'Unknown projector type: {projector_type}')

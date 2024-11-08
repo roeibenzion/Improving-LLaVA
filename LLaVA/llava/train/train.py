@@ -49,6 +49,34 @@ def rank0_print(*args):
 from packaging import version
 IS_TOKENIZER_GREATER_THAN_0_14 = version.parse(tokenizers.__version__) >= version.parse('0.14')
 
+from transformers import TrainerCallback, TrainingArguments, TrainerState, TrainerControl
+import os
+
+class InferenceCallback(TrainerCallback):
+    def on_step_end(
+        self,
+        args: TrainingArguments,
+        state: TrainerState,
+        control: TrainerControl,
+        model=None,
+        **kwargs,
+    ):
+        # Check if it's time to run inference
+        if state.global_step % 1000 == 0 and state.global_step != 0:
+            # Ensure only the main process runs the inference
+            if args.local_rank == -1 or args.local_rank == 0:
+                # Define the checkpoint directory
+                output_dir = os.path.join(args.output_dir, f'checkpoint-{state.global_step}')
+                os.makedirs(output_dir, exist_ok=True)
+                # Save the model
+                model.save_pretrained(output_dir)
+                # Run the inference command
+                model_path = output_dir
+                image_file = "https://llava-vl.github.io/static/images/view.jpg"
+                cmd = f'python -m llava.serve.cli --model-path {model_path} --image-file "{image_file}"'
+                print(f"Running inference at step {state.global_step}: {cmd}")
+                os.system(cmd)
+
 
 @dataclass
 class ModelArguments:
@@ -976,12 +1004,19 @@ def train(attn_implementation=None):
 
     data_module = make_supervised_data_module(tokenizer=tokenizer,
                                               data_args=data_args)
-    # NOTE: get back and understand the trainer.
+    '''
     trainer = LLaVATrainer(model=model,
                     tokenizer=tokenizer,
                     args=training_args,
                     **data_module)
-
+    '''
+    trainer = LLaVATrainer(
+    model=model,
+    tokenizer=tokenizer,
+    args=training_args,
+    callbacks=[InferenceCallback()],
+    **data_module
+)
     if list(pathlib.Path(training_args.output_dir).glob("checkpoint-*")):
         trainer.train(resume_from_checkpoint=True)
     else:
