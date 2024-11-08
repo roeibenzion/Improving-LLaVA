@@ -52,6 +52,10 @@ IS_TOKENIZER_GREATER_THAN_0_14 = version.parse(tokenizers.__version__) >= versio
 from transformers import TrainerCallback, TrainingArguments, TrainerState, TrainerControl
 import os
 
+from transformers import TrainerCallback, TrainingArguments, TrainerState, TrainerControl
+import os
+import subprocess
+
 class InferenceCallback(TrainerCallback):
     def on_step_end(
         self,
@@ -70,12 +74,26 @@ class InferenceCallback(TrainerCallback):
                 os.makedirs(output_dir, exist_ok=True)
                 # Save the model
                 model.save_pretrained(output_dir)
-                # Run the inference command
+                # Define the model path and image file for inference
                 model_path = output_dir
                 image_file = "https://llava-vl.github.io/static/images/view.jpg"
+                
+                # Run the inference command and capture output
                 cmd = f'python -m llava.serve.cli --model-path {model_path} --image-file "{image_file}"'
                 print(f"Running inference at step {state.global_step}: {cmd}")
-                os.system(cmd)
+                
+                # Execute the command and capture the output
+                result = subprocess.run(cmd, shell=True, capture_output=True, text=True)
+                
+                # Write the output to a file
+                with open('./test_img', 'a') as f:
+                    f.write(f"Step {state.global_step}:\n")
+                    f.write(result.stdout)  # Write the standard output
+                    f.write("\n\n")
+                    
+                if result.stderr:
+                    print(f"Error during inference at step {state.global_step}: {result.stderr}")
+
 
 
 @dataclass
