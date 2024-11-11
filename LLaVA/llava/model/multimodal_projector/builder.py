@@ -82,17 +82,14 @@ def build_vision_projector(config, delay_load=False, **kwargs):
         projector.load_state_dict(pretrained_state_dict, strict=False)  # Allow partial loading for new layers
 
         # Freeze all parameters except the new layers
-        for name, param in projector.named_parameters():
+        for _, param in projector.named_parameters():
             # Freeze all parameters by default
             param.requires_grad = False
 
         # Set only the new layers to be trainable
-        for name, param in list(projector.named_parameters())[-4:]:  # Last 4 entries (GELU + Linear + GELU + Linear)
+        for _, param in list(projector.named_parameters())[-4:]:  # Last 4 entries (GELU + Linear + GELU + Linear)
             param.requires_grad = True
 
-        # Verify which parameters are trainable
-        trainable_params = [name for name, param in projector.named_parameters() if param.requires_grad]
-        print("Trainable parameters:", trainable_params)
         return projector
         
     if projector_type == 'linear':

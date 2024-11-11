@@ -900,6 +900,11 @@ def train(attn_implementation=None):
                 model.to(torch.float16)
         rank0_print("Adding LoRA adapters...")
         model = get_peft_model(model, lora_config)
+        # print peft model
+        print("PEFT model: ")
+        print("################")
+        print(model)
+        print("################")
 
     if 'mpt' in model_args.model_name_or_path:
         tokenizer = transformers.AutoTokenizer.from_pretrained(
@@ -1002,6 +1007,13 @@ def train(attn_implementation=None):
                     args=training_args,
                     **data_module)
     '''
+
+    print("Parameters to train: ")
+    print("################")
+    for name, param in model.named_parameters():
+        if param.requires_grad:
+            print(name)
+    print("################")
     trainer = LLaVATrainer(
     model=model,
     tokenizer=tokenizer,
