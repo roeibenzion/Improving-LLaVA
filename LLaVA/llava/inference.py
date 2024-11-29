@@ -102,7 +102,7 @@ inference_args = argparse.Namespace(
     device='cuda',
     temperature=0,
     max_new_tokens=512,
-    model_path='./checkpoints/your_model_checkpoint'
+    model_path='/content/MyLLaVA/LLaVA/checkpoints/llava-v1.5-7b-pretrain'
 )
 
 # Disable torch init to save memory
@@ -111,15 +111,15 @@ disable_torch_init()
 # Load the model
 tokenizer, model, image_processor, context_len = load_pretrained_model(
     inference_args.model_path,
-    'meta-llama/Llama-3.2-1B-Instruct', 
+    'lmsys/vicuna-7b-v1.5', 
     get_model_name_from_path(inference_args.model_path),
     load_8bit=False,
     load_4bit=False,
     device=inference_args.device
 )
 
-image_file = 'https://llava-vl.github.io/static/images/view.jpg'
-question = "What's in the picture?"
+image_file = '/content/Sample.png'
+question = "How many circles in the picture?"
 
 outputs = run_inference(model, tokenizer, image_processor, image_file, question, inference_args)
 print(outputs)

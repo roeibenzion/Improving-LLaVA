@@ -101,7 +101,12 @@ def load_pretrained_model(model_path, model_base, model_name, load_8bit=False, l
                 model = LlavaMptForCausalLM.from_pretrained(model_base, low_cpu_mem_usage=True, config=cfg_pretrained, **kwargs)
             else:
                 tokenizer = AutoTokenizer.from_pretrained(model_base, use_fast=False)
-                cfg_pretrained = AutoConfig.from_pretrained(model_path)
+                if model_name.lower() == 'llava-v1.5-7b-pretrain':
+                    from llava.model.language_model.llava_llama import LlavaConfig
+                    path = 'liuhaotian/llava-v1.5-mlp2x-336px-pretrain-vicuna-7b-v1.5'
+                    cfg_pretrained = LlavaConfig.from_pretrained(path)
+                else:
+                    cfg_pretrained = AutoConfig.from_pretrained(model_path)
                 model = LlavaLlamaForCausalLM.from_pretrained(model_base, low_cpu_mem_usage=True, config=cfg_pretrained, **kwargs)
                 print(f"Model config:{model.config}")
 
@@ -161,12 +166,15 @@ def load_pretrained_model(model_path, model_base, model_name, load_8bit=False, l
         if mm_use_im_start_end:
             tokenizer.add_tokens([DEFAULT_IM_START_TOKEN, DEFAULT_IM_END_TOKEN], special_tokens=True)
         model.resize_token_embeddings(len(tokenizer))
-
         vision_tower = model.get_vision_tower()
+        '''
         if not vision_tower.is_loaded:
             vision_tower.load_model(device_map=device_map)
         if device_map != 'auto':
             vision_tower.to(device=device_map, dtype=torch.float16)
+        '''
+        vision_tower.to(device="cuda" if torch.cuda.is_available() else "cpu", dtype=torch.float16)
+        vision_tower.load_model(device_map=device_map)
         image_processor = vision_tower.image_processor
 
     if hasattr(model.config, "max_sequence_length"):

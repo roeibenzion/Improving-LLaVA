@@ -158,11 +158,13 @@ class LLaVATrainer(Trainer):
             return super().create_optimizer()
 
         opt_model = self.model
+
         if self.optimizer is None:
             decay_parameters = get_parameter_names(opt_model, ALL_LAYERNORM_LAYERS)
             decay_parameters = [name for name in decay_parameters if "bias" not in name]
             if self.args.mm_projector_lr is not None:
                 projector_parameters = [name for name, _ in opt_model.named_parameters() if "mm_projector" in name]
+
                 optimizer_grouped_parameters = [
                     {
                         "params": [
@@ -223,10 +225,27 @@ class LLaVATrainer(Trainer):
                         manager.register_module_override(module, "weight", {"optim_bits": 32})
                         logger.debug(f"bitsandbytes: will optimize {module} in fp32")
                 logger.info(f"skipped: {skipped/2**20}M params")
-        
-            for group in optimizer_grouped_parameters:
-                param_count = sum(p.numel() for p in group["params"])
-                print(f"Group has {param_count} parameters with requires_grad=True.")
+
+        print("\nTrainable and Frozen Parameters:")
+        trainable_params_count = 0
+        trainable_params_size = 0
+        frozen_params_count = 0
+        frozen_params_size = 0
+
+        for name, param in opt_model.named_parameters():
+            if param.requires_grad:
+                print(f"Trainable: {name}")
+                trainable_params_count += 1
+                trainable_params_size += param.numel()
+            else:
+                print(f"Frozen: {name}")
+                frozen_params_count += 1
+                frozen_params_size += param.numel()
+
+        print(f"\nSummary:")
+        print(f"Trainable Parameters: {trainable_params_count} with {trainable_params_size:,} total elements")
+        print(f"Frozen Parameters: {frozen_params_count} with {frozen_params_size:,} total elements")
+
 
         return self.optimizer
 
